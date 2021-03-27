@@ -1,9 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import './index.css'
-import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import Login from './components/Auth/Login'
 import Register from './components/Auth/Register'
+import 'semantic-ui-css/semantic.min.css'
+import './App.css'
 import App from './App.jsx'
 
 const Root = () => (
@@ -17,8 +18,8 @@ const Root = () => (
 )
 
 ReactDOM.render(
-    <React.StrictMode>
-        <Root />
-    </React.StrictMode>,
+    // <React.StrictMode>
+    <Root />,
+    // </React.StrictMode>
     document.getElementById('root')
 )
