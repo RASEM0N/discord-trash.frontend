@@ -16,24 +16,86 @@ const initialState = {
     email: '',
     password: '',
     passwordConfirmation: '',
+    error: {
+        message: null,
+        status: false,
+        input: [],
+    },
 }
 
-function Register() {
-    const [formParams, setFormParams] = useState(initialState)
+const Register = () => {
+    const [form, setForm] = useState(initialState)
+    const [loading, setLoading] = useState(false)
 
-    const { email, username, password, passwordConfirmation } = formParams
+    const { email, username, password, passwordConfirmation, error } = form
 
-    const handleChange = (e) => {
-        setFormParams({ ...formParams, [e.target.name]: e.target.value })
+    const onChange = (e) => {
+        setForm({ ...form, [e.target.name]: e.target.value })
     }
-    const handleSubmit = (e) => {
-        e.preventDefault()
+
+    const onLoading = () => {
+        setLoading(true)
+    }
+
+    const offLoading = () => {
+        setLoading(false)
+    }
+
+    const stateError = (message = null, status = true, input = []) => {
+        setForm({
+            ...form,
+            error: {
+                message,
+                status,
+                input,
+            },
+        })
+    }
+
+    const isFormValid = () => {
+        if (
+            !email.length ||
+            !username.length ||
+            !password.length ||
+            !passwordConfirmation.length
+        ) {
+            stateError('Not all data is entered', false, [
+                'email',
+                'username',
+                'password',
+                'passwordConfirmation',
+            ])
+            return false
+        }
+
+        if (!(password.length >= 6)) {
+            stateError('Password length less than 6', false, ['password'])
+            return false
+        }
 
         if (password !== passwordConfirmation) {
-            console.error(`Password and Password Confirmation are not equal`)
+            stateError("Passwords don't match", false, [
+                'password',
+                'passwordConfirmation',
+            ])
+            return false
+        }
+        stateError()
+
+        return true
+    }
+
+    const handlerInputError = (inputName) =>
+        error.input.includes(inputName) ? 'error' : ''
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        let err = isFormValid()
+        if (!err) {
             return
         }
-        firebase
+        onLoading()
+        await firebase
             .auth()
             .createUserWithEmailAndPassword(email, password)
             .then((createUser) => {
@@ -41,7 +103,9 @@ function Register() {
             })
             .catch((err) => {
                 console.log(err)
+                stateError(err.message, true)
             })
+        offLoading()
     }
 
     return (
@@ -63,7 +127,8 @@ function Register() {
                             icon="user"
                             iconPosition="left"
                             placeholder="Username"
-                            onChange={handleChange}
+                            className={handlerInputError('username')}
+                            onChange={onChange}
                             type="text"
                             value={username}
                         />
@@ -73,7 +138,8 @@ function Register() {
                             icon="mail"
                             iconPosition="left"
                             placeholder="Email"
-                            onChange={handleChange}
+                            className={handlerInputError('email')}
+                            onChange={onChange}
                             type="email"
                             value={email}
                         />
@@ -83,7 +149,8 @@ function Register() {
                             icon="lock"
                             iconPosition="left"
                             placeholder="Password"
-                            onChange={handleChange}
+                            className={handlerInputError('password')}
+                            onChange={onChange}
                             type="password"
                             value={password}
                         />
@@ -93,15 +160,27 @@ function Register() {
                             icon="lock"
                             iconPosition="left"
                             placeholder="Password Confirmation"
-                            onChange={handleChange}
+                            className={handlerInputError(
+                                'passwordConfirmation'
+                            )}
+                            onChange={onChange}
                             type="password"
                             value={passwordConfirmation}
                         />
-                        <Button color={'blue'} fluid type="submit">
+                        <Button
+                            className={loading ? 'loading' : null}
+                            color={'blue'}
+                            fluid
+                            type="submit"
+                        >
                             Submit
                         </Button>
                     </Segment>
                 </Form>
+                {error.message ? (
+                    <Message error>{error.message}</Message>
+                ) : null}
+
                 <Message
                     style={{
                         backgroundColor: 'white',
