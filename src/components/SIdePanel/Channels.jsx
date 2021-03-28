@@ -9,7 +9,11 @@ const initialStateForm = {
 
 const channelRef = firebase.database().ref('channels')
 
-const Channels = ({ user: { displayName, photoURL }, setCurrentChannel }) => {
+const Channels = ({
+    user: { displayName, photoURL },
+    setCurrentChannel,
+    currentChannel,
+}) => {
     const [channels, setChannel] = useState([])
     const [form, setForm] = useState(initialStateForm)
     const [stateModal, setStateModal] = useState(false)

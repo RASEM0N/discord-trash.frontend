@@ -5,7 +5,7 @@ import Channels from './Channels'
 import { connect } from 'react-redux'
 import { setCurrentChannel } from '../../actions/channels-action'
 
-const SidePanel = ({ user, setCurrentChannel }) => {
+const SidePanel = ({ user, setCurrentChannel, currentChannel }) => {
     return (
         <Menu
             size="large"
@@ -29,6 +29,7 @@ const SidePanel = ({ user, setCurrentChannel }) => {
                     photoURL: user.photoURL,
                 }}
                 setCurrentChannel={setCurrentChannel}
+                currentChannel={currentChannel}
             />
         </Menu>
     )
@@ -36,6 +37,7 @@ const SidePanel = ({ user, setCurrentChannel }) => {
 
 const mapStateToProps = (state) => ({
     user: state.user.currentUser,
+    currentChannel: state.channel.currentChannel,
 })
 export default connect(mapStateToProps, {
     setCurrentChannel,
