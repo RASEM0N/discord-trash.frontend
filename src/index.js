@@ -10,18 +10,21 @@ import firebase from './firebase/firebase'
 import { connect, Provider } from 'react-redux'
 import store from './store'
 import { compose } from 'redux'
-import { setUser } from './actions/user-action'
+import { setUser, signOutUser } from './actions/user-action'
 import Spinner from './components/common/Spinner'
 
-const Root = ({ history, setUser, isLoading }) => {
+const Root = ({ history, setUser, signOutUser, isLoading }) => {
     useEffect(() => {
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 setUser(user)
                 history.push('/')
+            } else {
+                history.push('/login')
+                signOutUser()
             }
         })
-    }, [setUser, history])
+    }, [setUser])
 
     return isLoading ? (
         <Spinner />
@@ -42,6 +45,7 @@ const RootWithAuth = compose(
     withRouter,
     connect(mapStateToProps, {
         setUser,
+        signOutUser,
     })
 )(Root)
 
