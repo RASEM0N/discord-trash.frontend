@@ -23,6 +23,8 @@ const initialState = {
     },
 }
 
+const userRef = firebase.database().ref('users')
+
 const Register = () => {
     const [form, setForm] = useState(initialState)
     const [loading, setLoading] = useState(false)
@@ -88,18 +90,39 @@ const Register = () => {
     const handlerInputError = (inputName) =>
         error.input.includes(inputName) ? 'error' : ''
 
+    const saveUser = (createdUser) => {
+        return userRef.child(createdUser.user.uid).set({
+            name: createdUser.user.displayName,
+            avatar: createdUser.user.photoURL,
+        })
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         let err = isFormValid()
         if (!err) {
             return
         }
+
         onLoading()
         await firebase
             .auth()
             .createUserWithEmailAndPassword(email, password)
             .then((createUser) => {
-                console.log(createUser)
+                createUser.user
+                    .updateProfile({
+                        displayName: username,
+                        photoURL: `https://oceni-krasotu.ru/wp-content/uploads/2019/12/eff759c20463c17cd91253ffe3e91768.jpg`,
+                    })
+                    .then(() => {
+                        saveUser(createUser).then(() => {
+                            console.log('user saved')
+                        })
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                        stateError(err.message, true)
+                    })
             })
             .catch((err) => {
                 console.log(err)
