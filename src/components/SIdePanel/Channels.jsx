@@ -9,7 +9,7 @@ const initialStateForm = {
 
 const channelRef = firebase.database().ref('channels')
 
-const Channels = ({ user: { displayName, photoURL } }) => {
+const Channels = ({ user: { displayName, photoURL }, setCurrentChannel }) => {
     const [channels, setChannel] = useState([])
     const [form, setForm] = useState(initialStateForm)
     const [stateModal, setStateModal] = useState(false)
@@ -20,9 +20,13 @@ const Channels = ({ user: { displayName, photoURL } }) => {
         let loadedChannels = []
         channelRef.on('child_added', (snap) => {
             loadedChannels.push(snap.val())
-            setChannel(loadedChannels)
+            setChannel([...channels, ...loadedChannels])
         })
-    }, [setChannel])
+    }, [])
+
+    const changeChannel = (channel) => {
+        setCurrentChannel(channel)
+    }
 
     const displayChannels =
         channels.length > 0
@@ -30,7 +34,7 @@ const Channels = ({ user: { displayName, photoURL } }) => {
                   <Menu.Item
                       key={channel.id}
                       onClick={() => {
-                          console.log(channel)
+                          changeChannel(channel)
                       }}
                       style={{
                           opacity: 0.7,
