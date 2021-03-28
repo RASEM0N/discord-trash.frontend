@@ -21,7 +21,7 @@ const Root = ({ history, setUser, isLoading }) => {
                 history.push('/')
             }
         })
-    }, [])
+    }, [setUser, history])
 
     return isLoading ? (
         <Spinner />
