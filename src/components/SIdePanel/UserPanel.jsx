@@ -1,8 +1,9 @@
 import React from 'react'
-import { Dropdown, Grid, Header, Icon, Menu } from 'semantic-ui-react'
+import { Dropdown, Grid, Header, Icon, Image, Menu } from 'semantic-ui-react'
 import firebase from '../../firebase/firebase'
+import { connect } from 'react-redux'
 
-const UserPanel = () => {
+const UserPanel = ({ user: { displayName, photoURL } }) => {
     const onSignOut = () => {
         firebase
             .auth()
@@ -17,7 +18,8 @@ const UserPanel = () => {
             key: 'user',
             text: (
                 <span>
-                    Signed is as <strong>User</strong>{' '}
+                    Signed by{' '}
+                    <strong>{displayName ? displayName : 'User'}</strong>{' '}
                 </span>
             ),
             disabled: true,
@@ -25,7 +27,7 @@ const UserPanel = () => {
 
         {
             key: 'avatar',
-            text: <span>Change a Avatar</span>,
+            text: <span>Change Avatar</span>,
         },
 
         {
@@ -48,22 +50,42 @@ const UserPanel = () => {
                         <Icon className="chat" />
                         <Header.Content>Chat</Header.Content>
                     </Header>
+                    <Header
+                        style={{
+                            padding: '0.25rem',
+                        }}
+                        inverted
+                        as="h4"
+                    >
+                        <Dropdown
+                            trigger={
+                                <span>
+                                    <Image
+                                        src={photoURL ? photoURL : null}
+                                        avatar
+                                        spaced="right"
+                                        style={{
+                                            objectFit: 'cover',
+                                            // objectPosition: '0 -15px',
+                                            width: 60,
+                                            height: 60,
+                                        }}
+                                    />
+                                    {displayName ? displayName : 'User'}
+                                </span>
+                            }
+                            options={dropdownOptions}
+                        />
+                    </Header>
                 </Grid.Row>
                 {/*User Dropdown*/}
-                <Header
-                    style={{
-                        padding: '0.25rem',
-                    }}
-                    inverted
-                    as="h4"
-                >
-                    <Dropdown
-                        trigger={<span>User</span>}
-                        options={dropdownOptions}
-                    />
-                </Header>
             </Grid.Column>
         </Grid>
     )
 }
-export default UserPanel
+
+const mapStateToProps = (state) => ({
+    user: state.user.currentUser,
+})
+
+export default connect(mapStateToProps, null)(UserPanel)
