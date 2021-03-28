@@ -11,10 +11,10 @@ import { connect, Provider } from 'react-redux'
 import store from './store'
 import { compose } from 'redux'
 import { setUser } from './actions/user-action'
+import Spinner from './components/common/Spinner'
 
-const Root = ({ history, setUser }) => {
+const Root = ({ history, setUser, isLoading }) => {
     useEffect(() => {
-        // вроде куки чекает
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 setUser(user)
@@ -23,7 +23,9 @@ const Root = ({ history, setUser }) => {
         })
     }, [])
 
-    return (
+    return isLoading ? (
+        <Spinner />
+    ) : (
         <Switch>
             <Route exact path={'/'} component={App} />
             <Route path={'/login'} component={Login} />
@@ -32,9 +34,13 @@ const Root = ({ history, setUser }) => {
     )
 }
 
+const mapStateToProps = (state) => ({
+    isLoading: state.user.isLoading,
+})
+
 const RootWithAuth = compose(
     withRouter,
-    connect(null, {
+    connect(mapStateToProps, {
         setUser,
     })
 )(Root)
