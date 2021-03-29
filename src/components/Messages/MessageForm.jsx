@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
 import { Segment, Input, Button } from 'semantic-ui-react'
+import uuidv4 from 'uuid/v4'
 import firebase from '../../firebase/firebase'
 import FileModal from './FileModal'
+
+const storageRef = firebase.storage().ref()
 
 const MessagesForm = ({
     messageRef,
@@ -11,12 +14,35 @@ const MessagesForm = ({
     const [message, setMessage] = useState('')
     const [loading, setLoading] = useState(false)
     const [modal, setModal] = useState(false)
+    const [upload, setUpload] = useState({
+        uploadTask: null,
+        uploadState: '',
+    })
 
     const openModal = () => setModal(true)
     const closeModal = () => setModal(false)
 
     const uploadFile = (file, metadata = null) => {
-        console.log(file, metadata)
+        const pathToUpload = currentChannel.id
+        const ref = messageRef
+        let fileFormat
+        switch (metadata.contentType) {
+            case 'image/jpeg': {
+                fileFormat = 'jpg'
+                break
+            }
+
+            case 'image/png': {
+                fileFormat = 'png'
+                break
+            }
+
+            default: {
+                fileFormat = null
+                break
+            }
+        }
+        const filePath = `chat/public/${uuidv4()}/${fileFormat}`
     }
 
     const onChange = (e) => {
