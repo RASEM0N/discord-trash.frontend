@@ -24,3 +24,17 @@ body{
     right: 1em;
     z-index: 200;
 }
+
+.message__self{
+    position: relative;
+}
+
+.message__self::before{
+    position: absolute;
+    content: '';
+    width: 5px;
+    height: 40px;
+    top: 0;
+    left: -15px;
+    background-color: gray;
+}

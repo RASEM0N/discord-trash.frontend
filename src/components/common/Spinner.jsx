@@ -14,7 +14,7 @@ function Spinner() {
             <img
                 src={spinner}
                 style={{
-                    width: '150px',
+                    width: '75px',
                 }}
                 alt="Loading..."
             />

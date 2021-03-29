@@ -1,8 +1,12 @@
-import { SET_CURRENT_CHANNEL } from '../actions/types'
+import { GET_CHANNEL_MESSAGES, SET_CURRENT_CHANNEL } from '../actions/types'
 
 const initialState = {
     currentChannel: null,
     channels: [],
+    message: {
+        messages: [],
+        messageLoading: false,
+    },
 }
 
 const channelReducer = (state = initialState, action) => {
@@ -12,6 +16,20 @@ const channelReducer = (state = initialState, action) => {
             return {
                 ...state,
                 currentChannel: payload.currentChannel,
+                message: {
+                    messages: [],
+                    messageLoading: false,
+                },
+            }
+        }
+
+        case GET_CHANNEL_MESSAGES: {
+            return {
+                ...state,
+                message: {
+                    messages: payload.messages,
+                    messageLoading: true,
+                },
             }
         }
 
