@@ -15,6 +15,10 @@ const MessagesForm = ({
     const openModal = () => setModal(true)
     const closeModal = () => setModal(false)
 
+    const uploadFile = (file, metadata = null) => {
+        console.log(file, metadata)
+    }
+
     const onChange = (e) => {
         setMessage(e.target.value)
     }
@@ -74,7 +78,11 @@ const MessagesForm = ({
                     disabled={loading}
                     onClick={openModal}
                 />
-                <FileModal modal={modal} closeModal={closeModal} />
+                <FileModal
+                    modal={modal}
+                    closeModal={closeModal}
+                    uploadFile={uploadFile}
+                />
             </Button.Group>
         </Segment>
     )

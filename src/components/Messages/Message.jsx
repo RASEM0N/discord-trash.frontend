@@ -2,7 +2,6 @@ import React from 'react'
 import { Comment } from 'semantic-ui-react'
 
 function Message({ message, userId }) {
-    console.log(message, userId)
     return (
         <Comment
             style={{

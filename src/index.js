@@ -17,7 +17,6 @@ const Root = ({ history, setUser, signOutUser, isLoading }) => {
     useEffect(() => {
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
-                console.log(user)
                 setUser(user)
                 history.push('/')
             } else {
